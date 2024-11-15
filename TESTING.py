@@ -510,10 +510,10 @@ if st.session_state.page == "page_2":
                 plt.axvline(x=date, color="red", linestyle="--", alpha=0.7)
         
             # Add labels for the first Golden and Death Cross only
-            if golden_cross.any():
+            if not data[golden_cross].empty:  # Corrected check for Golden Cross
                 first_gc_date = data[golden_cross].index[0]
                 plt.axvline(x=first_gc_date, color="green", linestyle="--", label="Golden Cross", alpha=0.7)
-            if death_cross.any():
+            if not data[death_cross].empty:  # Corrected check for Death Cross
                 first_dc_date = data[death_cross].index[0]
                 plt.axvline(x=first_dc_date, color="red", linestyle="--", label="Death Cross", alpha=0.7)
                 
