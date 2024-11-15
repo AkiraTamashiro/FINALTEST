@@ -1,3 +1,6 @@
+from scipy.optimize import minimize
+from highcharts_core.options import HighchartsOptions
+from highcharts_core.chart import Highcharts
 import streamlit as st
 import matplotlib.pyplot as plt
 import datetime
@@ -8,9 +11,6 @@ ad.user_cache_dir = lambda *args: "/tmp"
 import yfinance as yf
 import riskfolio as rp
 import numpy as np
-from scipy.optimize import minimize
-from highcharts_core.options import HighchartsOptions
-from highcharts_core.chart import Highcharts
 import streamlit.components.v1 as components
 
 # Set page config
