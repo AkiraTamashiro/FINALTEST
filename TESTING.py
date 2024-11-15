@@ -8,7 +8,7 @@ ad.user_cache_dir = lambda *args: "/tmp"
 import yfinance as yf
 import riskfolio as rp
 import numpy as np
-import streamlit.components.v1 as components
+from scipy.optimize import minimize
 
 # Set page config
 st.set_page_config(page_icon=":chart_with_upwards_trend:", page_title="InvTech", layout="centered")
@@ -251,7 +251,8 @@ if st.session_state.page == "quiz":
         # Store risk tolerance in session state
         st.session_state.risk_tolerance_level = risk_tolerance  # Save the result in session state
 
-        
+
+
         # Add a button to go to the next page
         if st.button("Next", on_click=go_to_page_2, key="page_2"):
             pass
@@ -497,24 +498,15 @@ if st.session_state.page == "page_2":
             plt.plot(data, label="Price")
             plt.plot(short_ma, label="50-day MA", linestyle="--")
             plt.plot(long_ma, label="200-day MA", linestyle="--")
+            
             # Identify Golden and Death Cross points
             golden_cross = (short_ma.shift(1) < long_ma.shift(1)) & (short_ma > long_ma)
             death_cross = (short_ma.shift(1) > long_ma.shift(1)) & (short_ma < long_ma)
             
-            # Add vertical lines for crossovers
-            for date in data[golden_cross].index:
-                plt.axvline(x=date, color="green", linestyle="--", alpha=0.7)
-            for date in data[death_cross].index:
-                plt.axvline(x=date, color="red", linestyle="--", alpha=0.7)
-        
-            # Add labels for the first Golden and Death Cross only
-            if not data[golden_cross].empty:  # Corrected check for Golden Cross
-                first_gc_date = data[golden_cross].index[0]
-                plt.axvline(x=first_gc_date, color="green", linestyle="--", label="Golden Cross", alpha=0.7)
-            if not data[death_cross].empty:  # Corrected check for Death Cross
-                first_dc_date = data[death_cross].index[0]
-                plt.axvline(x=first_dc_date, color="red", linestyle="--", label="Death Cross", alpha=0.7)
-                
+            # Use the points from the moving averages for the scatter plot
+            plt.scatter(data[golden_cross].index, data[golden_cross], marker="s", color="green", s=100, label="Golden Cross", zorder=5)
+            plt.scatter(data[death_cross].index, data[death_cross], marker="s", color="red", s=100, label="Death Cross", zorder=5)
+            
             plt.legend()
             plt.title(f"Golden/Death Cross for {symbol}")
             st.pyplot(plt)
@@ -523,6 +515,7 @@ if st.session_state.page == "page_2":
         st.write("The golden cross & death cross are two technical indicators that help signal potential trends on stock prices, based on the movement of two moving averages. Golden Cross: This occurs when a short-term moving average (50-day moving average) crosses above a long-term moving average (200-day) moving average). The golden cross generally is viewed as a bullish signal, suggesting that the stocks momentum is shifting upward and that a potential uptrend may be beginning. Time to buy! Death Cross: This is the opposite scenario, where the short-term moving average crosses below the long-term moving average. The death cross is considered a bearish signal, indicating that downward momentum may continue & that the stock could be entering a downtrend. Sell before it is too late!")
         plot_golden_death_cross(company1)
         plot_golden_death_cross(company2)
+
         
     else:
         st.error("Please enter both company symbols for comparison.")
