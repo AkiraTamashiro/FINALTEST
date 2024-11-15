@@ -1,5 +1,3 @@
-#Web App
-%%writefile Testapp.py
 import streamlit as st
 import matplotlib.pyplot as plt
 import datetime
