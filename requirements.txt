@@ -8,3 +8,7 @@ yfinance
 riskfolio-lib
 numpy
 scipy
+highcharts_core.options
+highcharts_core.chart
+Highcharts
+streamlit.components.v1
