@@ -1,6 +1,3 @@
-from scipy.optimize import minimize
-from highcharts_core.options import HighchartsOptions
-from highcharts_core.chart import Highcharts
 import streamlit as st
 import matplotlib.pyplot as plt
 import datetime
