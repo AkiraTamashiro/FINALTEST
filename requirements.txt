@@ -1,10 +1,10 @@
 streamlit
-matplotlib.pyplot
+matplotlib
 datetime
-plotly.graph_objs
+plotly
 pandas
 appdirs
 yfinance
-riskfolio
+riskfolio-lib
 numpy
-scipy.optimize
+scipy
