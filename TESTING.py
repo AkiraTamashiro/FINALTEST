@@ -251,9 +251,7 @@ if st.session_state.page == "quiz":
         # Store risk tolerance in session state
         st.session_state.risk_tolerance_level = risk_tolerance  # Save the result in session state
 
-        # Display the risk tolerance
-        st.markdown(f"Your risk tolerance level: **{risk_tolerance}**")
-
+        
         # Add a button to go to the next page
         if st.button("Next", on_click=go_to_page_2, key="page_2"):
             pass
