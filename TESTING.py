@@ -1,5 +1,3 @@
-#Web App
-%%writefile Testapp.py
 import streamlit as st
 import matplotlib.pyplot as plt
 import datetime
@@ -479,14 +477,14 @@ if st.session_state.page == "page_2":
             short_ma = data.rolling(window=50).mean()
             long_ma = data.rolling(window=200).mean()
 
-            # Identify Golden and Death Cross points
-            golden_cross = (short_ma.shift(1) < long_ma.shift(1)) & (short_ma > long_ma)
-            death_cross = (short_ma.shift(1) > long_ma.shift(1)) & (short_ma < long_ma)
-            
+                       
             plt.figure(figsize=(12, 6))
             plt.plot(data, label="Price")
             plt.plot(short_ma, label="50-day MA", linestyle="--")
             plt.plot(long_ma, label="200-day MA", linestyle="--")
+            # Identify Golden and Death Cross points
+            golden_cross = (short_ma.shift(1) < long_ma.shift(1)) & (short_ma > long_ma)
+            death_cross = (short_ma.shift(1) > long_ma.shift(1)) & (short_ma < long_ma)
             plt.scatter(data[golden_cross].index, data[golden_cross], color="green", label="Golden Cross", zorder=5)
             plt.scatter(data[death_cross].index, data[death_cross], color="red", label="Death Cross", zorder=5)
             plt.legend()
