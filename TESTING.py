@@ -502,8 +502,12 @@ if st.session_state.page == "page_2":
             # Identify Golden and Death Cross points
             golden_cross = (short_ma.shift(1) < long_ma.shift(1)) & (short_ma > long_ma)
             death_cross = (short_ma.shift(1) > long_ma.shift(1)) & (short_ma < long_ma)
-            plt.scatter(data[golden_cross].index, data[golden_cross], color="green", label="Golden Cross", zorder=5)
-            plt.scatter(data[death_cross].index, data[death_cross], color="red", label="Death Cross", zorder=5)
+            # Add vertical lines at Golden/Death Cross points
+            for date in data[golden_cross].index:
+                plt.axvline(x=date, color="green", linestyle="--", label="Golden Cross", alpha=0.7)
+            for date in data[death_cross].index:
+                plt.axvline(x=date, color="red", linestyle="--", label="Death Cross", alpha=0.7)
+
             plt.legend()
             plt.title(f"Golden/Death Cross for {symbol}")
             st.pyplot(plt)
