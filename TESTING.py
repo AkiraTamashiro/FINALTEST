@@ -1,3 +1,5 @@
+#Web App
+%%writefile Testapp.py
 import streamlit as st
 import matplotlib.pyplot as plt
 import datetime
@@ -480,22 +482,13 @@ if st.session_state.page == "page_2":
             # Identify Golden and Death Cross points
             golden_cross = (short_ma.shift(1) < long_ma.shift(1)) & (short_ma > long_ma)
             death_cross = (short_ma.shift(1) > long_ma.shift(1)) & (short_ma < long_ma)
-
-            # Add green markers for Golden Cross and red markers for Death Cross
-            plt.scatter(data[golden_cross].index, data[golden_cross], color="green", label="Golden Cross", zorder=5)
-            plt.scatter(data[death_cross].index, data[death_cross], color="red", label="Death Cross", zorder=5)
-
-            plt.title(f"Golden/Death Cross for {symbol}")
-            plt.legend()
-            plt.xlabel("Date")
-            plt.ylabel("Adjusted Close Price")
-            plt.grid(alpha=0.3)
-            st.pyplot(plt)
-
+            
             plt.figure(figsize=(12, 6))
             plt.plot(data, label="Price")
             plt.plot(short_ma, label="50-day MA", linestyle="--")
             plt.plot(long_ma, label="200-day MA", linestyle="--")
+            plt.scatter(data[golden_cross].index, data[golden_cross], color="green", label="Golden Cross", zorder=5)
+            plt.scatter(data[death_cross].index, data[death_cross], color="red", label="Death Cross", zorder=5)
             plt.legend()
             plt.title(f"Golden/Death Cross for {symbol}")
             st.pyplot(plt)
@@ -504,8 +497,6 @@ if st.session_state.page == "page_2":
         st.write("The golden cross & death cross are two technical indicators that help signal potential trends on stock prices, based on the movement of two moving averages. Golden Cross: This occurs when a short-term moving average (50-day moving average) crosses above a long-term moving average (200-day) moving average). The golden cross generally is viewed as a bullish signal, suggesting that the stocks momentum is shifting upward and that a potential uptrend may be beginning. Time to buy! Death Cross: This is the opposite scenario, where the short-term moving average crosses below the long-term moving average. The death cross is considered a bearish signal, indicating that downward momentum may continue & that the stock could be entering a downtrend. Sell before it is too late!")
         plot_golden_death_cross(company1)
         plot_golden_death_cross(company2)
-
-
 
         try:
             # Compare stock price movements
@@ -599,3 +590,4 @@ if st.session_state.page == "final_page":
                 st.error(f"Error building portfolio: {e}")
     #else:
         #st.warning("Please complete the Risk Tolerance Quiz first to get stock suggestions.")
+
