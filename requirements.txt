@@ -1,6 +1,7 @@
 streamlit
 matplotlib
 pyplot
+matplotlib.pyplot
 datetime
 plotly.graph_objs
 pandas
