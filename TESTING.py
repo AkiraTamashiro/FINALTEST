@@ -9,6 +9,9 @@ import yfinance as yf
 import riskfolio as rp
 import numpy as np
 from scipy.optimize import minimize
+from highcharts_core.options import HighchartsOptions
+from highcharts_core.chart import Highcharts
+import streamlit.components.v1 as components
 
 # Set page config
 st.set_page_config(page_icon=":chart_with_upwards_trend:", page_title="InvTech", layout="centered")
@@ -489,33 +492,58 @@ if st.session_state.page == "page_2":
             st.error(f"Error fetching data: {e}")
 
         # Plot Golden/Death Cross
-        def plot_golden_death_cross(symbol):
+        def plot_golden_death_cross_highchart(symbol):
             data = yf.download(symbol, start="2022-01-01")['Adj Close']
             short_ma = data.rolling(window=50).mean()
             long_ma = data.rolling(window=200).mean()
-
-                       
-            plt.figure(figsize=(12, 6))
-            plt.plot(data, label="Price")
-            plt.plot(short_ma, label="50-day MA", linestyle="--")
-            plt.plot(long_ma, label="200-day MA", linestyle="--")
-            
+        
             # Identify Golden and Death Cross points
             golden_cross = (short_ma.shift(1) < long_ma.shift(1)) & (short_ma > long_ma)
             death_cross = (short_ma.shift(1) > long_ma.shift(1)) & (short_ma < long_ma)
-            
-            # Use the points from the moving averages for the scatter plot
-            plt.scatter(data[golden_cross].index, data[golden_cross], marker="s", color="green", s=100, label="Golden Cross", zorder=5)
-            plt.scatter(data[death_cross].index, data[death_cross], marker="s", color="red", s=100, label="Death Cross", zorder=5)
-            
-            plt.legend()
-            plt.title(f"Golden/Death Cross for {symbol}")
-            st.pyplot(plt)
-
-        st.subheader("**Golden/Death Cross for Selected Stocks**")
-        st.write("The golden cross & death cross are two technical indicators that help signal potential trends on stock prices, based on the movement of two moving averages. Golden Cross: This occurs when a short-term moving average (50-day moving average) crosses above a long-term moving average (200-day) moving average). The golden cross generally is viewed as a bullish signal, suggesting that the stocks momentum is shifting upward and that a potential uptrend may be beginning. Time to buy! Death Cross: This is the opposite scenario, where the short-term moving average crosses below the long-term moving average. The death cross is considered a bearish signal, indicating that downward momentum may continue & that the stock could be entering a downtrend. Sell before it is too late!")
-        plot_golden_death_cross(company1)
-        plot_golden_death_cross(company2)
+        
+            # Create data points for the chart
+            price_series = [{"x": date.timestamp() * 1000, "y": value} for date, value in data.items()]
+            short_ma_series = [{"x": date.timestamp() * 1000, "y": value} for date, value in short_ma.items()]
+            long_ma_series = [{"x": date.timestamp() * 1000, "y": value} for date, value in long_ma.items()]
+        
+            golden_points = [{"x": date.timestamp() * 1000, "y": value} for date, value in data[golden_cross].items()]
+            death_points = [{"x": date.timestamp() * 1000, "y": value} for date, value in data[death_cross].items()]
+        
+            # Configure Highcharts options
+            chart_options = {
+                "chart": {"type": "line"},
+                "title": {"text": f"Golden/Death Cross for {symbol}"},
+                "xAxis": {"type": "datetime"},
+                "yAxis": {"title": {"text": "Price"}},
+                "series": [
+                    {"name": "Price", "data": price_series, "color": "#2b908f"},
+                    {"name": "50-day MA", "data": short_ma_series, "color": "#f7a35c", "dashStyle": "ShortDash"},
+                    {"name": "200-day MA", "data": long_ma_series, "color": "#7cb5ec", "dashStyle": "ShortDot"},
+                    {
+                        "name": "Golden Cross",
+                        "type": "scatter",
+                        "data": golden_points,
+                        "color": "green",
+                        "marker": {"symbol": "circle"},
+                    },
+                    {
+                        "name": "Death Cross",
+                        "type": "scatter",
+                        "data": death_points,
+                        "color": "red",
+                        "marker": {"symbol": "diamond"},
+                    },
+                ],
+            }
+        
+            # Render the chart in Streamlit
+            chart = Highcharts(options=HighchartsOptions(chart_options))
+            components.html(chart.html_container(), height=600, width="100%")
+        
+        # Replace this in your Streamlit section for Golden/Death Cross plotting
+        st.subheader("**Golden/Death Cross for Selected Stocks (Highcharts)**")
+        plot_golden_death_cross_highchart(company1)
+        plot_golden_death_cross_highchart(company2)
 
         
     else:
