@@ -499,11 +499,15 @@ if st.session_state.page == "page_2":
             plt.plot(data, label="Price")
             plt.plot(short_ma, label="50-day MA", linestyle="--")
             plt.plot(long_ma, label="200-day MA", linestyle="--")
+            
             # Identify Golden and Death Cross points
             golden_cross = (short_ma.shift(1) < long_ma.shift(1)) & (short_ma > long_ma)
             death_cross = (short_ma.shift(1) > long_ma.shift(1)) & (short_ma < long_ma)
-            plt.scatter(data[golden_cross].index, data[golden_cross], color="green", label="Golden Cross", zorder=5)
-            plt.scatter(data[death_cross].index, data[death_cross], color="red", label="Death Cross", zorder=5)
+            
+            # Use the points from the moving averages for the scatter plot
+            plt.scatter(data[golden_cross].index, data[golden_cross], marker="s", color="green", s=100, label="Golden Cross", zorder=5)
+            plt.scatter(data[death_cross].index, data[death_cross], marker="s", color="red", s=100, label="Death Cross", zorder=5)
+            
             plt.legend()
             plt.title(f"Golden/Death Cross for {symbol}")
             st.pyplot(plt)
