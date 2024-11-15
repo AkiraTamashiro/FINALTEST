@@ -1,3 +1,5 @@
+#Web App
+%%writefile Testapp.py
 import streamlit as st
 import matplotlib.pyplot as plt
 import datetime
@@ -470,6 +472,23 @@ if st.session_state.page == "page_2":
                   st.write(f"**{metric}:** {value}")
                 else:
                   st.write(f"**{metric}:** N/A")
+                  
+        st.subheader("**Stock Price Comparison**")
+        try:
+            # Compare stock price movements
+            data1 = yf.download(company1, start="2023-01-01")['Adj Close']
+            data2 = yf.download(company2, start="2023-01-01")['Adj Close']
+
+            plt.figure(figsize=(12, 6))
+            plt.plot(data1, label=company1)
+            plt.plot(data2, label=company2)
+            plt.xlabel("Date")
+            plt.ylabel("Adjusted Close Price")
+            plt.title(f"Price Comparison: {company1} vs {company2}")
+            plt.legend()
+            st.pyplot(plt)
+        except Exception as e:
+            st.error(f"Error fetching data: {e}")
 
         # Plot Golden/Death Cross
         def plot_golden_death_cross(symbol):
@@ -496,21 +515,7 @@ if st.session_state.page == "page_2":
         plot_golden_death_cross(company1)
         plot_golden_death_cross(company2)
 
-        try:
-            # Compare stock price movements
-            data1 = yf.download(company1, start="2023-01-01")['Adj Close']
-            data2 = yf.download(company2, start="2023-01-01")['Adj Close']
-
-            plt.figure(figsize=(12, 6))
-            plt.plot(data1, label=company1)
-            plt.plot(data2, label=company2)
-            plt.xlabel("Date")
-            plt.ylabel("Adjusted Close Price")
-            plt.title(f"Price Comparison: {company1} vs {company2}")
-            plt.legend()
-            st.pyplot(plt)
-        except Exception as e:
-            st.error(f"Error fetching data: {e}")
+        
     else:
         st.error("Please enter both company symbols for comparison.")
 
@@ -588,4 +593,3 @@ if st.session_state.page == "final_page":
                 st.error(f"Error building portfolio: {e}")
     #else:
         #st.warning("Please complete the Risk Tolerance Quiz first to get stock suggestions.")
-
